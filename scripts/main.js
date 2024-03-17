@@ -17,12 +17,13 @@ const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.inner
   camera.lookAt(0, 0, 0);
   
   const renderer = new THREE.WebGLRenderer();
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  const ambientLight = new THREE.AmbientLight(0xFFFFFF, 2);
+  ambientLight.castShadow=true;
   scene.add(ambientLight);
   
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-  directionalLight.position.set(1, 20, 1);
-  scene.add(directionalLight); 
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  directionalLight.position.set(25, 120, -35);
+  //scene.add(directionalLight); 
 
   const spotLight = new THREE.SpotLight(0xFFFFFF, 1, 50, 0.8 );
   spotLight.position.set(1, 5, -45);
@@ -47,12 +48,13 @@ const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.inner
 
 //clip
 
-//TEXTURES
+//SKYBOX
 let sceneBackground = new THREE.TextureLoader().load( '../assets/textures/sbox2.jpg')
 sceneBackground.wrapS = THREE.MirroredRepeatWrapping;
 sceneBackground.wrapT = THREE.MirroredRepeatWrapping;
 scene.background = sceneBackground
 const objLoader = new OBJLoader();
+
 //OBJ Loader
 {
   const objLoader = new OBJLoader();
@@ -65,7 +67,7 @@ const objLoader = new OBJLoader();
     objLoader.setMaterials(mtl);
     objLoader.load('../assets/models/tree2.obj', function (textree)  {
       textree.position.set(5, 10, -3);
-      textree.scale.setScalar(0.2);
+      textree.scale.setScalar(0.3);
       scene.add(textree);
     });
   });
@@ -80,14 +82,32 @@ const objLoader = new OBJLoader();
     mtl.preload();
     objLoader.setMaterials(mtl);
     objLoader.load('../assets/models/xbarrier.obj', function (tplayer)  {
-      tplayer.rotation.set(0,180,0);
-      tplayer.position.set(-10, 10, -3);
-      tplayer.scale.setScalar(0.2);
+      tplayer.rotation.set(0,90,0);
+      tplayer.position.set(25, 10, -3);
+      tplayer.scale.setScalar(0.17);
       scene.add(tplayer);
     });
   });
 }
+//Fairy Ring
 
+{
+  const objLoader = new OBJLoader();
+
+
+{
+  const mtlLoader = new MTLLoader();
+  mtlLoader.load('../assets/models/fairy ring.mtl', function (mtl)  {
+    mtl.preload();
+    objLoader.setMaterials(mtl);
+    objLoader.load('../assets/models/fairy ring.obj', function (tfairy)  {
+      tfairy.rotation.set(0,0,0);
+      tfairy.position.set(25, -5, -35);
+      tfairy.scale.setScalar(5);
+      scene.add(tfairy);
+    });
+  });
+}}
 //Code Starts here
 //Texture / Materials
 const matrGrass = new THREE.TextureLoader().load('../assets/textures/grass.jpg');
@@ -95,7 +115,7 @@ const matrGrass = new THREE.TextureLoader().load('../assets/textures/grass.jpg')
 
 //shapes
 
-const landgeometry = new THREE.ConeGeometry( 120, 50, 150 ); 
+const landgeometry = new THREE.ConeGeometry( 120, 25, 12); 
 const landmaterial = new THREE.MeshBasicMaterial( {color: 0xffff00,map: matrGrass } );
 const landcone = new THREE.Mesh(landgeometry, landmaterial ); 
 landcone.rotation.set(0,0,0);
