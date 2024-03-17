@@ -11,25 +11,17 @@ const cameraWidth = 200;
 const cameraHeight = cameraWidth / aspectRatio;
 
 
-
-
-const camera = new THREE.OrthographicCamera(
-    cameraWidth / -2.5, // left
-    cameraWidth / 2.5, // right
-    cameraHeight / 2.5, // top
-    cameraHeight / -2.5, // bottom
-    0, // near plane
-    1000 // far plane
-  );
+//LIGHTS
+const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 10000);
   camera.position.set(100, 100, 100);
   camera.lookAt(0, 0, 0);
   
   const renderer = new THREE.WebGLRenderer();
   const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-  //scene.add(ambientLight);
+  scene.add(ambientLight);
   
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-  directionalLight.position.set(12, 12, 12);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+  directionalLight.position.set(1, 20, 1);
   scene.add(directionalLight); 
 
   const spotLight = new THREE.SpotLight(0xFFFFFF, 1, 50, 0.8 );
@@ -52,32 +44,63 @@ const camera = new THREE.OrthographicCamera(
   document.body.appendChild( renderer.domElement );
   const controls = new OrbitControls( camera, renderer.domElement );
   controls.update();
-  
 
+//clip
 
+//TEXTURES
+let sceneBackground = new THREE.TextureLoader().load( '../assets/textures/sbox2.jpg')
+sceneBackground.wrapS = THREE.MirroredRepeatWrapping;
+sceneBackground.wrapT = THREE.MirroredRepeatWrapping;
+scene.background = sceneBackground
+const objLoader = new OBJLoader();
 //OBJ Loader
 {
   const objLoader = new OBJLoader();
-  objLoader.load('../assets/models/tree.obj', (root) => {
-    scene.add(root);
-  });
-}
+
 //MTL Loader
 {
   const mtlLoader = new MTLLoader();
-  mtlLoader.load('../assets/models/tree.mtl', (mtl) => {
+  mtlLoader.load('../assets/models/tree2.mtl', function (mtl)  {
     mtl.preload();
     objLoader.setMaterials(mtl);
-    objLoader.load('../assets/models/tree.obj', (root) => {
-      scene.add(root);
+    objLoader.load('../assets/models/tree2.obj', function (textree)  {
+      textree.position.set(5, 10, -3);
+      textree.scale.setScalar(0.2);
+      scene.add(textree);
+    });
+  });
+}}
+//000000000000000000 CODE CODE CODE 0000000000000000000000000
+
+//xbarrier
+
+{
+  const mtlLoader = new MTLLoader();
+  mtlLoader.load('../assets/models/xbarrier.mtl', function (mtl)  {
+    mtl.preload();
+    objLoader.setMaterials(mtl);
+    objLoader.load('../assets/models/xbarrier.obj', function (tplayer)  {
+      tplayer.rotation.set(0,180,0);
+      tplayer.position.set(-10, 10, -3);
+      tplayer.scale.setScalar(0.2);
+      scene.add(tplayer);
     });
   });
 }
 
 //Code Starts here
 //Texture / Materials
+const matrGrass = new THREE.TextureLoader().load('../assets/textures/grass.jpg');
 
 
+//shapes
+
+const landgeometry = new THREE.ConeGeometry( 120, 50, 150 ); 
+const landmaterial = new THREE.MeshBasicMaterial( {color: 0xffff00,map: matrGrass } );
+const landcone = new THREE.Mesh(landgeometry, landmaterial ); 
+landcone.rotation.set(0,0,0);
+
+scene.add( landcone );
 
 function animate() {
 
